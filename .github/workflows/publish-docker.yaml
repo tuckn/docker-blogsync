@@ -1,0 +1,29 @@
+name: Publish Docker Repository
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Deploy to staging
+    runs-on: ubuntu-latest
+
+    # [steps] A sequence of tasks
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Publish to Registry
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: tuckn/blogsync
+        username: ${{ secrets.DOCKERHUB_USERNAME  }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD  }}
+
+    - name: Docker Hub Description
+      uses: peter-evans/dockerhub-description@v2.1.0
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME  }}
+        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD  }}
+        DOCKERHUB_REPOSITORY: tuckn/blogsync
