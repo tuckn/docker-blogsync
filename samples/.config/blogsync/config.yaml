@@ -1,0 +1,5 @@
+<USER_NAME>.hatenablog.com:
+  username: <USER_NAME>
+  password: <API_KEY>
+default:
+  local_root: /root/blogs

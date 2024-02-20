@@ -12,7 +12,3 @@ ehthumbs_vista.db
 # MSOffice Cache
 ~$*
 *.tmp
-
-# blogsync directory
-.config
-blogs
