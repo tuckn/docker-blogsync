@@ -60,9 +60,19 @@ default:
 ```
 
 保存するファイルのエンコード形式はUTF8が適切でしょう。
-UTF8が何かよくわからない方は、このリポジトリにある`.\samples\.config\blogsync\config.yaml`をコピーして使ってください。
-
 APIキーは、はてなブログの設定 > 詳細設定 > AtomPubで確認できます。
+
+5 *blogs*フォルダを作成します。
+
+```console
+D:\HatenaBlog\
+├─ .config\
+└─ blogs\ ←
+```
+
+このフォルダ中にブログファイルが格納されます。
+
+5、6の設定に不安がある方は、このリポジトリにある`.\samples`フォルダをコピーして使ってください。
 
 ## 使用方法
 
@@ -95,7 +105,7 @@ C:\>docker run --rm -v C:\Users\MyName\.config:/root/.config tuckn/blogsync list
 `pull`コマンドを用いて、すでに投稿済みの全記事を取得できます。
 
 ```console
-D:\HatenaBlog>docker run --rm -v %CD%\.config:/root/.config -v %CD%:/root/blogs tuckn/blogsync pull xxxxx.hatenablog.com
+D:\HatenaBlog>docker run --rm -v %CD%\.config:/root/.config -v %CD%\blogs:/root/blogs tuckn/blogsync pull xxxxx.hatenablog.com
        GET ---> https://blog.hatena.ne.jp/xxxxx/xxxxx.hatenablog.com/atom/entry
        200 <--- https://blog.hatena.ne.jp/xxxxx/xxxxx.hatenablog.com/atom/entry
      fresh remote=2020-01-23 21:14:25 +0900 +0900 > local=0001-01-01 00:00:00 +0000 UTC
@@ -109,10 +119,12 @@ D:\HatenaBlog\
 ├─ .config\
 │  └─ blogsync\
 │     └─ config.yaml
-└─ xxxxx.hatenablog.com\
-   └─ entry\
-      ├─ 2017\
-      ...
+└─ blogs\
+  └─ xxxxx.hatenablog.com\
+     └─ entry\
+        ├─ _draft\
+        ├─ 2017\
+        ...
 ```
 
 ### コマンドの簡略化
