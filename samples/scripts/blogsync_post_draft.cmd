@@ -1,0 +1,1 @@
+docker run --rm -i --volume "%CD%\.config:/root/.config" --volume "%CD%\blogs:/root/blogs" tuckn/blogsync post --draft %1.hatenablog.com < .\blogs\templates\draft_%2.md

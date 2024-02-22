@@ -30,7 +30,7 @@ REPOSITORY        TAG       IMAGE ID       CREATED          SIZE
 tuckn/blogsync    latest    xxxxxxxxxxxx   12 minutes ago   934MB
 ```
 
-4 はてなブログ管理用のディレクトリを作成し、そこに移動します。
+4 はてなブログ管理用のフォルダを作成し、そこに移動します。
 
 ```console
 C:\>cd /d "D:\HatenaBlog"
@@ -52,8 +52,8 @@ D:\HatenaBlog\
 *config.yaml*に以下の内容を書き込み、保存します。
 
 ```yaml
-<ユーザー名>.hatenablog.com:
-  username: <ユーザー名>
+<はてなID>.hatenablog.com:
+  username: <はてなID>
   password: <APIキー>
 default:
   local_root: /root/blogs
@@ -79,7 +79,7 @@ D:\HatenaBlog\
 ### 動作確認
 
 まずは、`list`コマンドで動作を確認してみてください。
-コマンドプロンプトで、上記で作成した管理用のディレクトリ（.configディレクトリと同じ階層）に移動し、以下のコマンドを実行します。
+コマンドプロンプトで、上記で作成した管理用のフォルダ（上記例だと`D:\HatenaBlog\`フォルダ）に移動し、以下のコマンドを実行します。
 
 ```console
 D:\HatenaBlog>docker run --rm -v %CD%\.config:/root/.config tuckn/blogsync list
@@ -91,7 +91,12 @@ D:\HatenaBlog>docker run --rm -v %CD%\.config:/root/.config tuckn/blogsync list
 xxxxx.hatenablog.com /root/blogs/xxxxx.hatenablog.com
 ```
 
-なお、`%CD%`はカレントディレクトリパスを示しており、上記の例なら`"D:\HatenaBlog"`となります。
+> [!TIP]
+`docker run`コマンドにより、`blogsync`コマンドがDebian（Linux系OS）上で動作します。
+上記の例の場合、Windows上の`D:\HatenaBlog\`フォルダがLinux上の`/root/`として扱われます。
+
+> [!TIP]
+`%CD%`はカレントフォルダパスを示しており、上記の例なら`"D:\HatenaBlog"`となります。
 以下のように、`%CD%`の変わりにフルパスで指定しても動作します。
 
 ```console
@@ -112,7 +117,7 @@ D:\HatenaBlog>docker run --rm -v %CD%\.config:/root/.config -v %CD%\blogs:/root/
      store /root/blogs/xxxxx.hatenablog.com/entry/2020/01/01/123456.md
 ```
 
-実行すると、上記の例なら`D:\HatenaBlog\xxxxx.hatenablog.com`というディレクトリが作成され、その中に記事が格納されます。
+実行すると、上記の例なら`D:\HatenaBlog\xxxxx.hatenablog.com`というフォルダが作成され、その中に記事が格納されます。
 
 ```console
 D:\HatenaBlog\
@@ -130,17 +135,58 @@ D:\HatenaBlog\
 ### コマンドの簡略化
 
 このように、このDockerコマンドは長くなるので、簡略化したバッチファイルを用意しています。
-このリポジトリの`./samples/blogsync.cmd`がそれです。
-はてなブログ管理用のディレクトリ（今回の例だと`D:\HatenaBlog`）などにコピーして使ってください。
-これを用いると、本来のblogsyncと同じコマンドを実行できるようになります。
+このリポジトリの`./samples/scripts/blogsync.cmd`がそれです。
+実行する場合、はてなブログ管理用のフォルダ（今回の例だと`D:\HatenaBlog`）から実行してください。
 
 ```console
-D:\HatenaBlog>blogsync pull xxxxx.hatenablog.com
+D:\HatenaBlog\ ←
+├─ .config\
+├─ blogs\
+└─ scripts\
+        ├─ blogsync.cmd
+        ...
+```
+
+この位置関係の場合、以下が`blogsync pull`の実行例です。
+
+```console
+D:\HatenaBlog>scripts\blogsync.cmd pull xxxxx.hatenablog.com
+```
+
+結果
+
+```console
        GET ---> https://blog.hatena.ne.jp/xxxxx/xxxxx.hatenablog.com/atom/entry
        200 <--- https://blog.hatena.ne.jp/xxxxx/xxxxx.hatenablog.com/atom/entry
 ```
 
-必要に応じて、このバッチファイル内の`%CD%`を書き換えてください。
+#### 下書き用スクリプト
+
+```console
+D:\HatenaBlog>scripts\blogsync_post_draft.cmd <はてなID> PREP
+```
+
+結果
+
+```console
+      POST ---> https://blog.hatena.ne.jp/xxxxx/xxxxx.hatenablog.com/atom/entry
+       201 <--- https://blog.hatena.ne.jp/xxxxx/xxxxx.hatenablog.com/atom/entry
+     store /root/blogs/xxxxx.hatenablog.com/entry/_draft/9999999999999999999.md
+/root/blogs/xxxxx.hatenablog.com/entry/_draft/9999999999999999999.md
+```
+
+#### 下書き削除用スクリプト
+
+```console
+D:\HatenaBlog>scripts\blogsync_remove_draft.cmd <はてなID> 9999999999999999999.md
+```
+
+結果
+
+```console
+    DELETE ---> https://blog.hatena.ne.jp/xxxxx/xxxxx.hatenablog.com/atom/entry/9999999999999999999
+       200 <--- https://blog.hatena.ne.jp/xxxxx/xxxxx.hatenablog.com/atom/entry/9999999999999999999
+```
 
 ## License
 

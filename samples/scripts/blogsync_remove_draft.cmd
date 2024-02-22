@@ -1,0 +1,1 @@
+docker run --rm --volume "%CD%\.config:/root/.config" --volume "%CD%\blogs:/root/blogs" tuckn/blogsync remove /root/blogs/%1.hatenablog.com/entry/_draft/%2
