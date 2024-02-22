@@ -30,7 +30,7 @@ REPOSITORY        TAG       IMAGE ID       CREATED          SIZE
 tuckn/blogsync    latest    xxxxxxxxxxxx   12 minutes ago   934MB
 ```
 
-4 はてなブログ管理用のフォルダを作成し、そこに移動します。
+4 はてなブログ管理用のフォルダ（今回の例は`D:\HatenaBlog`）を作成し、そこに移動します。
 
 ```console
 C:\>cd /d "D:\HatenaBlog"
@@ -39,8 +39,8 @@ D:\HatenaBlog>
 
 上記`/d`オプションは、異なるドライブに移動する場合にのみ付与します。
 
-5 設定ファイル格納用のフォルダを`".\.config\blogsync\config.yaml"`に作成します。
-例えば、上記で示した`"D:\HatenaBlog"`の場合は、`"D:\HatenaBlog\.config\blogsync\config.yaml"`に作成します。
+5 設定ファイル格納用のフォルダを`.config\blogsync\config.yaml`に作成します。
+例えば、上記で示した`D:\HatenaBlog`の場合は、`D:\HatenaBlog\.config\blogsync\config.yaml`に作成します。
 
 ```console
 D:\HatenaBlog\
@@ -52,7 +52,7 @@ D:\HatenaBlog\
 *config.yaml*に以下の内容を書き込み、保存します。
 
 ```yaml
-<はてなID>.hatenablog.com:
+<ブログID>.hatenablog.com:
   username: <はてなID>
   password: <APIキー>
 default:
@@ -60,6 +60,8 @@ default:
 ```
 
 保存するファイルのエンコード形式はUTF8が適切でしょう。
+
+ブログIDは、おそらく「はてなID」を小文字にしたものだと思われますが、正確な情報は探せませんでした…。
 APIキーは、はてなブログの設定 > 詳細設定 > AtomPubで確認できます。
 
 5 *blogs*フォルダを作成します。
@@ -105,9 +107,9 @@ C:\>docker run --rm -v C:\Users\MyName\.config:/root/.config tuckn/blogsync list
 
 相対パス表記では正常に動作しません。
 
-### 全ブログ記事の取得
+### ブログ全記事の取得
 
-`pull`コマンドを用いて、すでに投稿済みの全記事を取得できます。
+`pull`コマンドを用いて、はてなブログに投稿した全記事（下書き含む）のファイルを取得できます。
 
 ```console
 D:\HatenaBlog>docker run --rm -v %CD%\.config:/root/.config -v %CD%\blogs:/root/blogs tuckn/blogsync pull xxxxx.hatenablog.com
@@ -135,7 +137,7 @@ D:\HatenaBlog\
 ### コマンドの簡略化
 
 このように、このDockerコマンドは長くなるので、簡略化したバッチファイルを用意しています。
-このリポジトリの`./samples/scripts/blogsync.cmd`がそれです。
+このリポジトリの`./samples/scripts/`フォルダにある`.cmd`ファイルです。
 実行する場合、はてなブログ管理用のフォルダ（今回の例だと`D:\HatenaBlog`）から実行してください。
 
 ```console
@@ -151,6 +153,8 @@ D:\HatenaBlog\ ←
 
 ```console
 D:\HatenaBlog>scripts\blogsync.cmd pull xxxxx.hatenablog.com
+or
+D:\HatenaBlog>scripts\blogsync_pull.cmd pull <ブログID>
 ```
 
 結果
@@ -163,7 +167,7 @@ D:\HatenaBlog>scripts\blogsync.cmd pull xxxxx.hatenablog.com
 #### 下書き用スクリプト
 
 ```console
-D:\HatenaBlog>scripts\blogsync_post_draft.cmd <はてなID> PREP
+D:\HatenaBlog>scripts\blogsync_post_draft.cmd <ブログID> PREP
 ```
 
 結果
@@ -178,7 +182,7 @@ D:\HatenaBlog>scripts\blogsync_post_draft.cmd <はてなID> PREP
 #### 下書き削除用スクリプト
 
 ```console
-D:\HatenaBlog>scripts\blogsync_remove_draft.cmd <はてなID> 9999999999999999999.md
+D:\HatenaBlog>scripts\blogsync_remove_draft.cmd <ブログID> 9999999999999999999.md
 ```
 
 結果
